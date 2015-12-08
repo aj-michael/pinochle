@@ -1,0 +1,23 @@
+extends layout
+
+block content
+  h1= title
+  form(name='input',action='/',method='post')
+    div(data-role='fieldcontain')
+      label(for='email') Email #1&nbsp
+      input(id='email1',type='text',value='',name='email1')
+      br
+      br
+      label(for='email') Email #2&nbsp
+      input(id='email2',type='text',value='',name='email2')
+      br
+      br
+      label(for='email') Email #3&nbsp
+      input(id='email3',type='text',value='',name='email3')
+      br
+      br
+      label(for='email') Email #4&nbsp
+      input(id='email4',type='text',value='',name='email4')
+      br
+      br
+      input(type='submit',value='Shuffle')
