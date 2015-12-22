@@ -146,7 +146,7 @@ router.post('/', function(req, res) {
 
   gameNumber += 1;
 
-  res.render('index', { title: 'Pincole Shuffler' });
+  res.render('index', { title: 'Pinochle Shuffler' });
 });
 
 
