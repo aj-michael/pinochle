@@ -2,7 +2,7 @@ var express = require('express');
 var nodemailer = require('nodemailer');
 var router = express.Router();
 var twilio = require('twilio');
-var client = new twilio.RestClient('', '');
+var client = new twilio.RestClient('ACc0a8ab7d1a3137833e93cff17deffd4b', '73ecf9fe245ea13f84a85712ec7deedc');
 
 var gameNumber = 1;
 
@@ -100,7 +100,7 @@ function printableSuit(suitNumber) {
 function sendHand(players, number, hand) {
   client.sms.messages.create({
     to: '+1' + number,
-    from: '',
+    from: '+13343943618',
     body: 'Game ' + gameNumber + '\n Your hand: ' + hand
   }, function(error, message) {
     if (!error) {
