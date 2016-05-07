@@ -1,13 +1,8 @@
 var express = require('express');
 var nodemailer = require('nodemailer');
 var router = express.Router();
-var transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'michaelfamilypinochle@gmail.com',
-    pass: ''
-  }
-});
+var twilio = require('twilio');
+var client = new twilio.RestClient('', '');
 
 var gameNumber = 1;
 
@@ -102,14 +97,19 @@ function printableSuit(suitNumber) {
   return suitValue;
 }
 
-function sendHand(players, email, hand) {
-  transporter.sendMail({
-    from:    'pinochle@michaelfamily.xyz',
-    to:      email,
-    subject: 'Pinochle hand',
-    text:    'Game ' + gameNumber +
-             '\nPlayers: ' + players.join(", ") +
-             '\nYour hand: ' + hand
+function sendHand(players, number, hand) {
+  client.sms.messages.create({
+    to: '+1' + number,
+    from: '',
+    body: 'Game ' + gameNumber + '\n Your hand: ' + hand
+  }, function(error, message) {
+    if (!error) {
+      console.log("Twilio succeeded!");
+      console.log(message);
+    } else {
+      console.log("Oops, Twilio had an error.");
+      console.log(error);
+    }
   });
 }
 
