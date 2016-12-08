@@ -128,10 +128,10 @@ router.post('/', function(req, res) {
   var email1 = req.body.email1;
   console.log(email1);
 
-  var hand1 = printableHand(pinochleDeck.slice(0,12));
-  var hand2 = printableHand(pinochleDeck.slice(12,24));
-  var hand3 = printableHand(pinochleDeck.slice(24,36));
-  var hand4 = printableHand(pinochleDeck.slice(36,48));
+  var hand1 = printableHand(pinochleDeck.slice(0,12).sort());
+  var hand2 = printableHand(pinochleDeck.slice(12,24).sort());
+  var hand3 = printableHand(pinochleDeck.slice(24,36).sort());
+  var hand4 = printableHand(pinochleDeck.slice(36,48).sort());
   console.log(hand1);
 
   var email1 = req.body.email1;
