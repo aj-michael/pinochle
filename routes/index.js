@@ -82,16 +82,16 @@ function printableSuit(suitNumber) {
   var suitValue = 'Z';
   switch(suitNumber) {
     case 0:
-      suitValue = 'C'
+      suitValue = '\u2663'
       break;
     case 1:
-      suitValue = 'D'
+      suitValue = '\u2666'
       break;
     case 2:
-      suitValue = 'S'
+      suitValue = '\u2660'
       break;
     case 3:
-      suitValue = 'H'
+      suitValue = '\u2661'
       break;
   }
   return suitValue;
