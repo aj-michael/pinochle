@@ -45,28 +45,28 @@ function printableValue(valueNumber) {
       valueValue = '9';
       break;
     case 2:
-      valueValue = '10';
+      valueValue = 'J';
       break;
     case 3:
-      valueValue = '10';
+      valueValue = 'J';
       break;
     case 4:
-      valueValue = 'J';
+      valueValue = 'Q';
       break;
     case 5:
-      valueValue = 'J';
+      valueValue = 'Q';
       break;
     case 6:
-      valueValue = 'Q';
+      valueValue = 'K';
       break;
     case 7:
-      valueValue = 'Q';
+      valueValue = 'K';
       break;
     case 8:
-      valueValue = 'K';
+      valueValue = '10';
       break;
     case 9:
-      valueValue = 'K';
+      valueValue = '10';
       break;
     case 10:
       valueValue = 'A';
