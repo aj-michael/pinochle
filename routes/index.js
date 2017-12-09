@@ -97,11 +97,16 @@ function printableSuit(suitNumber) {
   return suitValue;
 }
 
-function sendHand(players, number, hand) {
+function sendHand(players, number, hand, upcard) {
+  if (upcard == null) {
+    message = 'Game ' + gameNumber + '\n Your hand: ' + hand
+  } else {
+    message = 'Game ' + gameNumber + '\n Your hand: ' + hand + '\n Upcard: ' + upcard
+  }
   client.sms.messages.create({
     to: '+1' + number,
     from: '+13343943618',
-    body: 'Game ' + gameNumber + '\n Your hand: ' + hand
+    body: message
   }, function(error, message) {
     if (!error) {
       console.log("Twilio succeeded!");
@@ -118,15 +123,37 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Pinochle Shuffler' });
 });
 
+router.post('/euchre', function(req, res) {
+  console.log('Received shuffle request: ' + JSON.stringify(req.body));
+  var deck = deck(24);
+  shuffle(deck);
+  console.log('Shuffled deck is ' + deck);
+  var phone1 = req.body.phone1;
+  var phone2 = req.body.phone2;
+  var phone3 = req.body.phone3;
+  var phone4 = req.body.phone4;
+  var numericalComparator = function(a, b) { return a - b; };
+  var hand1 = printableHand(pinochleDeck.slice(0,5).sort(numericalComparator));
+  var hand2 = printableHand(pinochleDeck.slice(5,10).sort(numericalComparator));
+  var hand3 = printableHand(pinochleDeck.slice(10,15).sort(numericalComparator));
+  var hand4 = printableHand(pinochleDeck.slice(15,20).sort(numericalComparator));
+  var upcard = printableHand(pinochleDeck.slice(20,21));
+  sendHand([phone1, phone2, phone3, phone4], phone1, hand1, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone2, hand2, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone3, hand3, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone4, hand4, upcard);
+
+  gameNumber += 1;
+
+  res.render('index', { title: 'Pinochle Shuffler' });
+}
+
 /* POST shuffle request. */
 router.post('/', function(req, res) {
   console.log('Received shuffle request: ' + JSON.stringify(req.body));
   var pinochleDeck = deck(48);
   shuffle(pinochleDeck);
   console.log('Shuffled deck is ' + pinochleDeck);
-
-  var email1 = req.body.email1;
-  console.log(email1);
 
   var numericalComparator = function(a, b) { return a - b; };
   var hand1 = printableHand(pinochleDeck.slice(0,12).sort(numericalComparator));
@@ -135,15 +162,15 @@ router.post('/', function(req, res) {
   var hand4 = printableHand(pinochleDeck.slice(36,48).sort(numericalComparator));
   console.log(hand1);
 
-  var email1 = req.body.email1;
-  var email2 = req.body.email2;
-  var email3 = req.body.email3;
-  var email4 = req.body.email4;
+  var phone1 = req.body.phone1;
+  var phone2 = req.body.phone2;
+  var phone3 = req.body.phone3;
+  var phone4 = req.body.phone4;
 
-  sendHand([email1, email2, email3, email4], email1, hand1);
-  sendHand([email1, email2, email3, email4], email2, hand2);
-  sendHand([email1, email2, email3, email4], email3, hand3);
-  sendHand([email1, email2, email3, email4], email4, hand4);
+  sendHand([phone1, phone2, phone3, phone4], phone1, hand1);
+  sendHand([phone1, phone2, phone3, phone4], phone2, hand2);
+  sendHand([phone1, phone2, phone3, phone4], phone3, hand3);
+  sendHand([phone1, phone2, phone3, phone4], phone4, hand4);
 
   gameNumber += 1;
 
