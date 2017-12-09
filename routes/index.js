@@ -21,7 +21,7 @@ function shuffle(arr) {
 }
 
 /* A deck of proper size in order. */
-function deck(deckSize) {
+function make_deck(deckSize) {
   return Array.apply(null, {length: deckSize}).map(Number.call, Number);
 }
 
@@ -123,35 +123,10 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Pinochle Shuffler' });
 });
 
-router.post('/euchre', function(req, res) {
+
+function pinochle(req, res) {
   console.log('Received shuffle request: ' + JSON.stringify(req.body));
-  var deck = deck(24);
-  shuffle(deck);
-  console.log('Shuffled deck is ' + deck);
-  var phone1 = req.body.phone1;
-  var phone2 = req.body.phone2;
-  var phone3 = req.body.phone3;
-  var phone4 = req.body.phone4;
-  var numericalComparator = function(a, b) { return a - b; };
-  var hand1 = printableHand(pinochleDeck.slice(0,5).sort(numericalComparator));
-  var hand2 = printableHand(pinochleDeck.slice(5,10).sort(numericalComparator));
-  var hand3 = printableHand(pinochleDeck.slice(10,15).sort(numericalComparator));
-  var hand4 = printableHand(pinochleDeck.slice(15,20).sort(numericalComparator));
-  var upcard = printableHand(pinochleDeck.slice(20,21));
-  sendHand([phone1, phone2, phone3, phone4], phone1, hand1, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone2, hand2, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone3, hand3, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone4, hand4, upcard);
-
-  gameNumber += 1;
-
-  res.render('index', { title: 'Pinochle Shuffler' });
-}
-
-/* POST shuffle request. */
-router.post('/', function(req, res) {
-  console.log('Received shuffle request: ' + JSON.stringify(req.body));
-  var pinochleDeck = deck(48);
+  var pinochleDeck = make_deck(48);
   shuffle(pinochleDeck);
   console.log('Shuffled deck is ' + pinochleDeck);
 
@@ -175,6 +150,41 @@ router.post('/', function(req, res) {
   gameNumber += 1;
 
   res.render('index', { title: 'Pinochle Shuffler' });
+}
+
+function euchre(req, res) {
+  console.log('Received shuffle request: ' + JSON.stringify(req.body));
+  var pinochleDeck = make_deck(24).map(x => x*2);
+  shuffle(pinochleDeck);
+  console.log('Shuffled deck is ' + pinochleDeck);
+  var phone1 = req.body.phone1;
+  var phone2 = req.body.phone2;
+  var phone3 = req.body.phone3;
+  var phone4 = req.body.phone4;
+  var numericalComparator = function(a, b) { return a - b; };
+  var hand1 = printableHand(pinochleDeck.slice(0,5).sort(numericalComparator));
+  var hand2 = printableHand(pinochleDeck.slice(5,10).sort(numericalComparator));
+  var hand3 = printableHand(pinochleDeck.slice(10,15).sort(numericalComparator));
+  var hand4 = printableHand(pinochleDeck.slice(15,20).sort(numericalComparator));
+  var upcard = printableHand(pinochleDeck.slice(20,21));
+  sendHand([phone1, phone2, phone3, phone4], phone1, hand1, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone2, hand2, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone3, hand3, upcard);
+  sendHand([phone1, phone2, phone3, phone4], phone4, hand4, upcard);
+
+  gameNumber += 1;
+
+  res.render('index', { title: 'Pinochle/Euchre Shuffler' });
+}
+
+/* POST shuffle request. */
+router.post('/', function(req, res) {
+  console.log(req);
+  if (req.body.euchre == "on") {
+    euchre(req, res);
+  } else {
+    pinochle(req, res);
+  }
 });
 
 
