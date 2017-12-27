@@ -1,5 +1,4 @@
 var express = require('express');
-var nodemailer = require('nodemailer');
 var router = express.Router();
 var twilio = require('twilio');
 var client = new twilio.RestClient('ACc0a8ab7d1a3137833e93cff17deffd4b', '73ecf9fe245ea13f84a85712ec7deedc');

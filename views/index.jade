@@ -5,24 +5,24 @@ block content
   p All phone numbers must be 10 digit integers with no country code, no spaces or punctuation of any kind. For example, 2345678910.
   form(name='input',action='?',method='post')
     div(data-role='fieldcontain')
-      label(for='phone') Phone #1&nbsp
-      input(id='phone1',type='text',value='',name='phone1')
+      label(for='phone1') Phone #1&nbsp
+      input(name='phone1',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone') Phone #2&nbsp
-      input(id='phone2',type='text',value='',name='phone2')
+      label(for='phone2') Phone #2&nbsp
+      input(name='phone2',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone') Phone #3&nbsp
-      input(id='phone3',type='text',value='',name='phone3')
+      label(for='phone3') Phone #3&nbsp
+      input(name='phone3',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone') Phone #4&nbsp
-      input(id='phone4',type='text',value='',name='phone4')
+      label(for='phone4') Phone #4&nbsp
+      input(name='phone4',type='text',autocomplete='tel-national')
       br
       br
       label(for='type') Euchre
-      input(id='euchre',type='checkbox',name='euchre')
+      input(name='euchre',type='checkbox')
       br
       br
       input(type='submit',value='Shuffle')
