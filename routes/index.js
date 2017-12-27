@@ -117,11 +117,11 @@ function sendHand(players, number, hand, upcard) {
   });
 }
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Pinochle Shuffler' });
-});
+function renderMainPage(req) {
+  res.render('index', { title: 'Pinochle/Euchre Shuffler' });
+}
 
+router.get('/', renderMainPage);
 
 function pinochle(req, res) {
   console.log('Received shuffle request: ' + JSON.stringify(req.body));
@@ -173,7 +173,7 @@ function euchre(req, res) {
 
   gameNumber += 1;
 
-  res.render('index', { title: 'Pinochle/Euchre Shuffler' });
+  renderMainPage(res);
 }
 
 /* POST shuffle request. */
