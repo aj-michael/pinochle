@@ -17,11 +17,12 @@ function shuffle(arr) {
     arr[j] = arr[i];
     arr[i] = temp;
   }
+  return arr;
 }
 
-/* A deck of proper size in order. */
-function make_deck(deckSize) {
-  return Array.apply(null, {length: deckSize}).map(Number.call, Number);
+/* An array containing [0, 1, ..., size - 1]. */
+function makeDeck(size) {
+  return Array.apply(null, {length: size}).map(Number.call, Number);
 }
 
 function printableHand(handArr) {
@@ -35,157 +36,81 @@ function printableCard(cardNumber) {
 }
 
 function printableValue(valueNumber) {
-  var valueValue = '0';
-  switch (valueNumber) {
-    case 0:
-      valueValue = '9';
-      break;
-    case 1:
-      valueValue = '9';
-      break;
-    case 2:
-      valueValue = 'J';
-      break;
-    case 3:
-      valueValue = 'J';
-      break;
-    case 4:
-      valueValue = 'Q';
-      break;
-    case 5:
-      valueValue = 'Q';
-      break;
-    case 6:
-      valueValue = 'K';
-      break;
-    case 7:
-      valueValue = 'K';
-      break;
-    case 8:
-      valueValue = '10';
-      break;
-    case 9:
-      valueValue = '10';
-      break;
-    case 10:
-      valueValue = 'A';
-      break;
-    case 11:
-      valueValue = 'A';
-      break;
-  }
-  return valueValue;
+  var values = ['9', 'J', 'Q', 'K', '10', 'A'];
+  return values[Math.floor(valueNumber / 2)];
 }
 
 function printableSuit(suitNumber) {
-  var suitValue = 'Z';
-  switch(suitNumber) {
-    case 0:
-      suitValue = '\u2663'
-      break;
-    case 1:
-      suitValue = '\u2666'
-      break;
-    case 2:
-      suitValue = '\u2660'
-      break;
-    case 3:
-      suitValue = '\u2661'
-      break;
+  var values = ['\u2663', '\u2666', '\u2660', '\u2661'];
+  return values[suitNumber % 4];
+}
+
+function sendMessages(numbers, messages) {
+  for (var i = 0; i < numbers.length; i++) {
+    var number = numbers[i];
+    var message = messages[i];
+    client.sms.messages.create({
+      to: '+1' + number,
+      from: '+13343943618',
+      body: message
+    }, function(error, message) {
+      if (!error) {
+        console.log("Twilio succeeded!");
+        console.log(message);
+      } else {
+        console.log("Oops, Twilio had an error.");
+        console.log(error);
+      }
+    });
   }
-  return suitValue;
 }
 
-function sendHand(players, number, hand, upcard) {
-  if (upcard == null) {
-    message = 'Game ' + gameNumber + '\n Your hand: ' + hand
-  } else {
-    message = 'Game ' + gameNumber + '\n Your hand: ' + hand + '\n Upcard: ' + upcard
-  }
-  client.sms.messages.create({
-    to: '+1' + number,
-    from: '+13343943618',
-    body: message
-  }, function(error, message) {
-    if (!error) {
-      console.log("Twilio succeeded!");
-      console.log(message);
-    } else {
-      console.log("Oops, Twilio had an error.");
-      console.log(error);
-    }
-  });
-}
-
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Pinochle Shuffler' });
-});
-
-
-function pinochle(req, res) {
-  console.log('Received shuffle request: ' + JSON.stringify(req.body));
-  var pinochleDeck = make_deck(48);
-  shuffle(pinochleDeck);
-  console.log('Shuffled deck is ' + pinochleDeck);
-
+/**
+ * Given a deck represented as a list of numbers corresponding to a sorted
+ * pinochle deck, returns an array of formatted card strings divided arbitrarily
+ * between a number of players.
+ */
+function dealPrintableHands(deck, players, cardsPerPlayer) {
   var numericalComparator = function(a, b) { return a - b; };
-  var hand1 = printableHand(pinochleDeck.slice(0,12).sort(numericalComparator));
-  var hand2 = printableHand(pinochleDeck.slice(12,24).sort(numericalComparator));
-  var hand3 = printableHand(pinochleDeck.slice(24,36).sort(numericalComparator));
-  var hand4 = printableHand(pinochleDeck.slice(36,48).sort(numericalComparator));
-  console.log(hand1);
-
-  var phone1 = req.body.phone1;
-  var phone2 = req.body.phone2;
-  var phone3 = req.body.phone3;
-  var phone4 = req.body.phone4;
-
-  sendHand([phone1, phone2, phone3, phone4], phone1, hand1);
-  sendHand([phone1, phone2, phone3, phone4], phone2, hand2);
-  sendHand([phone1, phone2, phone3, phone4], phone3, hand3);
-  sendHand([phone1, phone2, phone3, phone4], phone4, hand4);
-
-  gameNumber += 1;
-
-  res.render('index', { title: 'Pinochle Shuffler' });
+  return makeDeck(players)
+      .map(_ => deck.splice(0, cardsPerPlayer))
+      .map(hand => hand.sort(numericalComparator))
+      .map(printableHand);
 }
 
-function euchre(req, res) {
-  console.log('Received shuffle request: ' + JSON.stringify(req.body));
-  var pinochleDeck = make_deck(24).map(x => x*2);
-  shuffle(pinochleDeck);
-  console.log('Shuffled deck is ' + pinochleDeck);
-  var phone1 = req.body.phone1;
-  var phone2 = req.body.phone2;
-  var phone3 = req.body.phone3;
-  var phone4 = req.body.phone4;
-  var numericalComparator = function(a, b) { return a - b; };
-  var hand1 = printableHand(pinochleDeck.slice(0,5).sort(numericalComparator));
-  var hand2 = printableHand(pinochleDeck.slice(5,10).sort(numericalComparator));
-  var hand3 = printableHand(pinochleDeck.slice(10,15).sort(numericalComparator));
-  var hand4 = printableHand(pinochleDeck.slice(15,20).sort(numericalComparator));
-  var upcard = printableHand(pinochleDeck.slice(20,21));
-  sendHand([phone1, phone2, phone3, phone4], phone1, hand1, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone2, hand2, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone3, hand3, upcard);
-  sendHand([phone1, phone2, phone3, phone4], phone4, hand4, upcard);
+function pinochleMessage(hand) {
+  return 'Game ' + gameNumber + '\n Your hand: ' + hand;
+}
 
-  gameNumber += 1;
+function messagesForPinochle() {
+  return dealPrintableHands(shuffle(makeDeck(48)), 4, 12).map(pinochleMessage);
+}
 
+function euchreMessage(hand, upcard) {
+  return 'Game ' + gameNumber + '\n Your hand: ' + hand + '\n Upcard: ' + upcard
+}
+
+function messagesForEuchre(req, res) {
+  // Multiply by 2 so that only one of each card is used.
+  var deck = shuffle(makeDeck(24)).map(x => x*2);
+  var upcard = printableCard(deck.pop());
+  return dealPrintableHands(deck, 4, 5).map(hand => euchreMessage(hand, upcard));
+}
+
+function renderMainPage(req, res) {
   res.render('index', { title: 'Pinochle/Euchre Shuffler' });
 }
 
-/* POST shuffle request. */
+router.get('/', renderMainPage);
+
 router.post('/', function(req, res) {
-  console.log(req);
-  if (req.body.euchre == "on") {
-    euchre(req, res);
-  } else {
-    pinochle(req, res);
-  }
+  console.log("Received request: " + JSON.stringify(req.body));
+  var messages = (req.body.euchre == "on")
+      ? messagesForEuchre()
+      : messagesForPinochle();
+  sendMessages(req.body.phone, messages);
+  gameNumber += 1;
+  renderMainPage(req, res);
 });
-
-
 
 module.exports = router;

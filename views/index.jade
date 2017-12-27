@@ -6,19 +6,19 @@ block content
   form(name='input',action='?',method='post')
     div(data-role='fieldcontain')
       label(for='phone1') Phone #1&nbsp
-      input(name='phone1',type='text',autocomplete='tel-national')
+      input(name='phone[0]',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone2') Phone #2&nbsp
-      input(name='phone2',type='text',autocomplete='tel-national')
+      label Phone #2&nbsp
+      input(name='phone[1]',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone3') Phone #3&nbsp
-      input(name='phone3',type='text',autocomplete='tel-national')
+      label Phone #3&nbsp
+      input(name='phone[2]',type='text',autocomplete='tel-national')
       br
       br
-      label(for='phone4') Phone #4&nbsp
-      input(name='phone4',type='text',autocomplete='tel-national')
+      label Phone #4&nbsp
+      input(name='phone[3]',type='text',autocomplete='tel-national')
       br
       br
       label(for='type') Euchre
