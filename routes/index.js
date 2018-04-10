@@ -105,10 +105,22 @@ router.get('/', renderMainPage);
 
 router.post('/', function(req, res) {
   console.log("Received request: " + JSON.stringify(req.body));
-  var messages = (req.body.euchre == "on")
-      ? messagesForEuchre()
-      : messagesForPinochle();
-  sendMessages(req.body.phone, messages);
+  if (req.body.phone) {
+    // Traditional API
+    var messages = (req.body.euchre == "on")
+        ? messagesForEuchre()
+        : messagesForPinochle();
+    sendMessages(req.body.phone, messages);
+  } else {
+    // Google Assistant API
+    var parameters = req.body.result.parameters;
+    var gameMode = parameters.game_mode;
+    var phones = [parameters.player1, parameters.player2, parameters.player3, parameters.player4];
+    var messages = (gameMode == "euchre")
+        ? messagesForEuchre()
+        : messagesForPinochle();
+    sendMessages(phones, messages);
+  }
   gameNumber += 1;
   renderMainPage(req, res);
 });
